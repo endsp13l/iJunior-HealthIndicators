@@ -4,40 +4,45 @@ using UnityEngine.UI;
 
 public class SmoothHealthBar : MonoBehaviour
 {
-    [SerializeField] private float _healthChangeSpeed = 20f;
+    [SerializeField] private float _valueChangeSpeed = 0.3f;
+    [SerializeField] private Health _health;
 
     private Slider _healthBar;
-    private float _maxHealth;
-    private float _currentHealth;
 
     private void Awake()
     {
         _healthBar = GetComponent<Slider>();
     }
 
-    public void SetMaxHealth(float health)
+    private void OnEnable()
     {
-        _maxHealth = health;
-        _currentHealth = _maxHealth;
-
-        _healthBar.maxValue = _maxHealth;
-        _healthBar.value = _maxHealth;
+        _health.HealthChanged += SetHealth;
     }
 
-    public void SetHealth(float health)
+    private void SetHealth()
     {
-       StartCoroutine(ChangeHealth(health));
-       StopCoroutine(ChangeHealth(health));
+        float value = _health.CurrentHealth / _health.MaxHealth;
+
+        StartCoroutine(SmoothChangeValue(value));
+        StopCoroutine(SmoothChangeValue(value));
     }
 
-    private IEnumerator ChangeHealth(float health)
+    private IEnumerator SmoothChangeValue(float value)
     {
-        while (_currentHealth != health)
+        float startValue = _healthBar.value;
+        float targetValue = value;
+
+        while (_healthBar.value != targetValue)
         {
-            _healthBar.value = Mathf.MoveTowards(_currentHealth, health, _healthChangeSpeed * Time.deltaTime);
-            _currentHealth = _healthBar.value;
-            
+            _healthBar.value = Mathf.MoveTowards(startValue, targetValue, _valueChangeSpeed * Time.deltaTime);
+            startValue = _healthBar.value;
+
             yield return null;
         }
+    }
+
+    private void OnDisable()
+    {
+        _health.HealthChanged -= SetHealth;
     }
 }
