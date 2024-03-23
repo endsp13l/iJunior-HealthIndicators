@@ -14,6 +14,7 @@ public class Health : MonoBehaviour
     private void Awake()
     {
         _currentHealth = _maxHealth;
+        HealthChanged?.Invoke();
     }
 
     public void TakeDamage(float damage)

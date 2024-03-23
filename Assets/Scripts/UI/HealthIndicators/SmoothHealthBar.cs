@@ -2,10 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SmoothHealthBar : MonoBehaviour
+public class SmoothHealthBar : HealthIndicator
 {
     [SerializeField] private float _valueChangeSpeed = 0.3f;
-    [SerializeField] private Health _health;
 
     private Slider _healthBar;
 
@@ -14,12 +13,7 @@ public class SmoothHealthBar : MonoBehaviour
         _healthBar = GetComponent<Slider>();
     }
 
-    private void OnEnable()
-    {
-        _health.HealthChanged += SetHealth;
-    }
-
-    private void SetHealth()
+    protected override void SetHealth()
     {
         float value = _health.CurrentHealth / _health.MaxHealth;
 
@@ -39,10 +33,5 @@ public class SmoothHealthBar : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    private void OnDisable()
-    {
-        _health.HealthChanged -= SetHealth;
     }
 }
