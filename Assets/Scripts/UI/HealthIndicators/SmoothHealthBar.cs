@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Slider))]
 public class SmoothHealthBar : HealthIndicator
 {
     [SerializeField] private float _valueChangeSpeed = 0.3f;
